@@ -1,3 +1,42 @@
+"""
+Important General NOTE: 
+Help me created a func that returns with 3 key/value pair Dictionaries:
+1: tag
+2: response/answer (name it as response)
+3: accuracy (in int)
+
+example: 
+return {"tag":"greeting", "responses":"Hello, thanks for asking", "accuracy":95}
+
+IF INACCURATE return:
+return {"tag":"unknown", "responses":"search could not accuratly detect input contents", "accuracy":0}
+
+@Yuan_Wei
+can help me, create functions that takes in a image path/string, example predictIMG("image.jpg")
+and predict and give the apove response layout.
+
+@Kenneth
+can help me, create functions that takes in a strings of text, example predictTXT("This is a massage for the chatbot")
+and predict and give the apove response layout.
+
+@Zhi_Xin
+The backend uses api calls. examples:
+Image rec:
+POST http://<IP/domain>/image
+IMPORTANT NOTE: the image file needs to be sent over as FORM-DATA (multipart/form-data) with the key being called image.
+
+chatbot:
+GET http://<IP/domain>/chatbot/<msg>
+
+reponse will be standeredise in json:
+example:
+{"tag":"greeting", "responses":"Hello, thanks for asking", "accuracy":95}
+
+all inacurate response will be:
+{"tag":"unknown", "responses":"search could not accuratly detect input contents", "accuracy":0}
+"""
+
+
 from flask import Flask , request , json
 
 import os
