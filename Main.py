@@ -1,39 +1,37 @@
 """
-Important General NOTE: 
-Help me created a func that returns with 3 key/value pair Dictionaries:
-1: tag
-2: response/answer (name it as response)
-3: accuracy (in int)
-
-example: 
-return {"tag":"greeting", "responses":"Hello, thanks for asking", "accuracy":95}
-
-IF INACCURATE return:
-return {"tag":"unknown", "responses":"search could not accuratly detect input contents", "accuracy":0}
-
 @Yuan_Wei
 can help me, create functions that takes in a image path/string, example predictIMG("image.jpg")
 and predict and give the apove response layout.
+
+example of return 
+    return {"label":"skin rash", "accuracy":85}
+example of unkown return:
+    return {"label":"unknown", "accuracy":0}
 
 @Kenneth
 can help me, create functions that takes in a strings of text, example predictTXT("This is a massage for the chatbot")
 and predict and give the apove response layout.
 
+example of return 
+    return {"tag":"for tag", "response":"This is a response", "accuracy":70}
+
+example of unkown return:
+    return {"tag":"known", "response":"known", "accuracy":0}
+
 @Zhi_Xin
 The backend uses api calls. examples:
-Image rec:
-POST http://<IP/domain>/image
-IMPORTANT NOTE: the image file needs to be sent over as FORM-DATA (multipart/form-data) with the key being called image.
+-- Image rec:
+    POST http://<IP/domain>/image
+    IMPORTANT NOTE: the image file needs to be sent over as FORM-DATA (multipart/form-data) with the key being called image.
 
-chatbot:
-GET http://<IP/domain>/chatbot/<msg>
+    reponse will be in json:
+    example of image reg:
+    {"label":"unknown", "accuracy":0}
 
-reponse will be standeredise in json:
-example:
-{"tag":"greeting", "responses":"Hello, thanks for asking", "accuracy":95}
-
-all inacurate response will be:
-{"tag":"unknown", "responses":"search could not accuratly detect input contents", "accuracy":0}
+-- chatbot
+    POST http://<IP/domain>/chatbot
+    response will be in json:
+    {"tag":"unknown", "responses":"search could not accuratly detect input contents", "accuracy":0}
 """
 
 
