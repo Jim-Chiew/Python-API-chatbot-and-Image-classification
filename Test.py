@@ -35,6 +35,9 @@ The backend uses api calls. examples:
 """
 
 
+from http.client import BAD_REQUEST, OK
+from json import JSONDecoder
+from urllib import response
 from flask import Flask , request , json
 
 import os
@@ -65,6 +68,7 @@ from tensorflow.keras.optimizers import SGD
 imag_cat_size = 3  #number of categories to detec.
 Imag_EPOCHS = 100   #EPOCH
 Chat_EPOCHS = 500   #EPOCH value for chatbot
+sensorLogPath = "Sensor.log"
 dataset_path = "images"
 IMAGE_DIMS = (224, 224, 3)
 BS = 32
@@ -75,6 +79,12 @@ lb = LabelBinarizer()
 # initialize the data and labels
 data = []
 labels = []
+
+
+#__________________________ Sensor: check file, if not exist, create _____________________________________________________________________________
+if (not os.path.isfile(sensorLogPath)):
+    with open(sensorLogPath, 'w') as f:
+        f.write(json.dumps({"light": 0, "Humidity": 0, "Temperature": 0, "mousture": 0, "timeStemp": "0"}))
 
 #__________________________ ChatBot: load model or traign if model missing.  ______________________________________________________________________
 try: 
@@ -211,11 +221,19 @@ def predict_class(sentence, model):
 def getResponse(ints, intents_json):
     tag = ints[0]['intent']
     list_of_intents = intents_json['intents']
+    response = {}
+
     for i in list_of_intents:
         if(i['tag']== tag):
-            result = random.choice(i['responses'])
+            response["response"] = random.choice(i['responses'])
             break
-    return result
+    
+    print ("tag: ", tag)
+    print ("Accuracy" + str((float(ints[0]['probability']) % 1) * 100))
+
+    response ["intent"] = tag
+    response ["Accuracy"] = (int((float(ints[0]['probability']) % 1) * 100))
+    return response
 
 def chatbot_response(msg):
     ints = predict_class(msg, model)
@@ -315,15 +333,30 @@ def image_rec():
     label = lb.classes_[idx]
     acc = proba[idx]
 
-    reply = {"Identified": label}
+    reply = {"label": label, "accuracy": str(int(acc * 100)), }
 
     return json.dumps(reply)
     
 @api.route('/chatbot/<msg>' , methods=['GET'])
 def chatbot(msg):
-    reply = {"Identified": chatbot_response(msg)}
+    return json.dumps(chatbot_response(msg))
 
-    return json.dumps(reply)
+@api.route('/sensor/' , methods=['GET'])
+def getSensor():
+    response = {}
+
+    with open(sensorLogPath) as f:
+        text = f.readlines()
+        text = text[-1]
+        text = json.loads(text)
+    return json.dumps(text)
+
+@api.route('/sensor/' , methods=['POST'])
+def postSensor():
+    sansorData = request.get_json()
+    with open(sensorLogPath, 'a') as file:
+        file.write("\n" + json.dumps(sansorData))
+    return sansorData
 
 if __name__ == '__main__':
     api.run() 
